@@ -1,3 +1,7 @@
+var url = document.getElementById('url');
+url.innerHTML = location.href;
+url.setAttribute("href", location.href);
+
 // Generate random room name if needed
 if (!location.hash) {
   location.hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
@@ -5,7 +9,7 @@ if (!location.hash) {
 const roomHash = location.hash.substring(1);
 
 // TODO: Replace with your own channel ID
-const drone = new ScaleDrone('VncuvsQvY7FptfOZ');
+const drone = new ScaleDrone('3D1odN6iBeZwBhGb');
 // Room name needs to be prefixed with 'observable-'
 const roomName = 'observable-' + roomHash;
 const configuration = {
@@ -72,7 +76,10 @@ function startWebRTC(isOfferer) {
   pc.ontrack = event => {
     const stream = event.streams[0];
     if (!remoteVideo.srcObject || remoteVideo.srcObject.id !== stream.id) {
-      remoteVideo.srcObject = stream;
+      //  remoteVideo.srcObject = stream;
+      callButton.addEventListener('click', (event)=>{
+        remoteVideo.srcObject = stream;
+      });
     }
   };
 
@@ -80,8 +87,11 @@ function startWebRTC(isOfferer) {
     audio: true,
     video: true,
   }).then(stream => {
-    // Display your local video in #localVideo element
-    localVideo.srcObject = stream;
+    // Display local video in #localVideo element
+    // localVideo.srcObject = stream;
+    startButton.addEventListener('click', (event)=>{
+      localVideo.srcObject = stream;
+    });
     // Add your stream to be sent to the conneting peer
     stream.getTracks().forEach(track => pc.addTrack(track, stream));
   }, onError);
@@ -109,11 +119,16 @@ function startWebRTC(isOfferer) {
     }
   });
 }
-
+hangupButton.addEventListener('click', hangupbutton);
 function localDescCreated(desc) {
   pc.setLocalDescription(
     desc,
     () => sendMessage({'sdp': pc.localDescription}),
     onError
   );
+}
+
+function hangupbutton(){
+  localVideo.srcObject = null;
+  remoteVideo.srcObject = null;
 }
