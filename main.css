@@ -1,0 +1,11 @@
+#title{
+    text-align: center;
+    font-family: "Noto Serif CJK TC", serif;
+}
+.head{
+    padding: 50px;
+}
+video {
+    max-width: 100%;
+    width: 320px;
+  }
